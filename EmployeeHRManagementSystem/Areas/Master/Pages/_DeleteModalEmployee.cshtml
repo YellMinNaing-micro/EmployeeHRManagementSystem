@@ -1,0 +1,36 @@
+﻿<div class="modal fade" id="DeleteEmployee" tabindex="-1" role="dialog" aria-labelledby="myModalSelectOption" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-0">
+            <div class="modal-header bg-gray-light border-bottom border-danger border-2 py-2">
+                <h5 class="modal-title text-danger" id="DeleteModelLabel"></h5>
+                <button id="btnDeclose" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form method="dialog" id="EmployeeModal" class="needs-validation" novalidate enctype="multipart/form-data">
+                <div class="modal-body">
+                    <input hidden id="txtType" />
+                    <input hidden id="deleteEmployee" />
+
+                    <h5 class="">Are you sure want to delete?</h5>
+
+                    <label class="form-label"> EmployeeID: </label>
+                    <label id="lblEmployeeID" class="form-label"></label><br />
+
+                    <label class="form-label"> EmployeeName: </label>
+                    <label id="lblEmpName" class="form-label"></label><br />
+
+                    <label class="form-label"> CompanyName: </label>
+                    <label id="lblCMName" class="form-label"></label><br />
+
+                    <label class="form-label"> Deparment: </label>
+                    <label id="lblDPName" class="form-label"></label><br />
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnDelConfirm" class="btn btn-danger">Delete</button>
+                    <button type="button" id="btnDelCancel" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

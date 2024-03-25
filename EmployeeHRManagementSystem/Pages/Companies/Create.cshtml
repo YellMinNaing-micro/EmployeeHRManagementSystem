@@ -1,0 +1,95 @@
+﻿@page
+@model EmployeeHRManagementSystem.Pages.Companies.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+
+<div class="row d-flex justify-content-center">
+    <div class="col-md-5">
+        <form method="post">
+            <div class="card shadow-lg">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h3 class="mb-0">Create Company</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Company.CompanyId" class="control-label"></label>
+                        <input asp-for="Company.CompanyId" id="CompanyId" class="form-control" />
+                        <span asp-validation-for="Company.CompanyId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Company.CompanyName" class="control-label"></label>
+                        <input asp-for="Company.CompanyName" id="CompanyName" class="form-control" />
+                        <span asp-validation-for="Company.CompanyName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Company.Address" class="control-label"></label>
+                        <input asp-for="Company.Address" id="Address" class="form-control" />
+                        <span asp-validation-for="Company.Address" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Company.Phone" class="control-label"></label>
+                        <input asp-for="Company.Phone" id="Phone" class="form-control" />
+                        <span asp-validation-for="Company.Phone" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Company.Email" class="control-label"></label>
+                        <input asp-for="Company.Email" id="Email" class="form-control" />
+                        <span asp-validation-for="Company.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" id="submitForm" value="Create" class="btn btn-outline-primary" />
+
+                        <a asp-page="Index" class="btn btn-outline-secondary">Back to List</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<partial name="_ScriptPartial" />
+    <script>
+        $(function () {
+            $('#submitForm').click(function () {
+                var companyId = $('#CompanyId').val()
+                var companyName = $('#CompanyName').val()
+                var address = $('#Address').val()
+                var phone = $('#Phone').val()
+                var email = $('#Email').val()
+                var Data = {
+                    CompanyId: companyId,
+                    CompanyName: companyName,
+                    Address: address,
+                    Phone: phone,
+                    email: email,
+                };
+                console.log(Data)
+                $.ajax({
+                    type: "POST",
+                    url: "/api/Company",
+                    contentType: "application/json",
+                    data: JSON.stringify(formData),
+                    success: function (data) {
+                        console.log("Success:", data);
+                    },
+                    error: function (error) {
+                        console.error("Error:", error);
+
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+
+
+

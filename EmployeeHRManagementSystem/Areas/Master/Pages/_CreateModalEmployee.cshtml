@@ -1,0 +1,47 @@
+﻿<div class="modal fade" id="CreateEmployee" tabindex="-1" role="dialog" aria-labelledby="myModalSelectOption" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-0">
+            <div class="modal-header bg-gray-light border-bottom border-secondary border-2 py-2">
+                <h5 class="modal-title" id="OptionModelLabel"></h5>
+                <button type="button" id="OpCancle" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="createOptionForm" class="needs-validation" method="dialog" novalidate>
+                    <input hidden id="txtType" />
+                    <input hidden id="txtEmployeeID" value="0" />
+                    <div class="row">
+                        <div class="col-sm-6 mb-3">
+                            <label class="form-label">EmployeeName<b class="text-danger">*</b></label>
+                            <input type="text" id="txtEMName" class="form-control" name="txtName" placeholder="Enter Employee Name." required />
+                            <div class="invalid-feedback">
+                                Please type Employee Name.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 mb-3">
+                            <label class="form-label">CompanyName<b class="text-danger">*</b></label>
+                            <input type="text" id="txtCMName" class="form-control" name="txtName" placeholder="Enter Company Name." required />
+                            <div class="invalid-feedback">
+                                Please type Company Name.
+                            </div>
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <label class="form-label">Deparment<b class="text-danger">*</b></label>
+                            <input type="text" id="txtDPName" class="form-control" name="txtName" placeholder="Enter Deparment Name." required />
+                            <div class="invalid-feedback">
+                                Please type Deparment Name.
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer mt-2">
+                <button type="button" id="btnOpSubmit" class="btn btn-sm btn-outline-primary">Save</button>
+                <button type="button" id="btnOpCancle" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>

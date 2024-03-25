@@ -1,0 +1,54 @@
+﻿@page
+@model EmployeeHRManagementSystem.Pages.Companies.IndexModel
+
+@{
+    ViewData["Title"] = "CompanyList";
+}
+
+<h1>Company List</h1>
+
+<p>
+    <a asp-page="Create" class="btn btn-outline-primary">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Company[0].CompanyName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Company[0].Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Company[0].Phone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Company[0].Email)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Company) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.CompanyId" class="btn btn-outline-info">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.CompanyId"class="btn btn-outline-warning">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.CompanyId" class="btn btn-outline-danger">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

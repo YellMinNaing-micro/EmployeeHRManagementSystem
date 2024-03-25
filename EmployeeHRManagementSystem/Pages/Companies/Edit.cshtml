@@ -1,0 +1,87 @@
+﻿@page
+@model EmployeeHRManagementSystem.Pages.Companies.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="row d-flex justify-content-center">
+    <div class="col-md-5">
+        <form method="post">
+            <div class="card shadow-lg">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h3 class="mb-0">
+                            Edit Company
+                        </h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Company.CompanyId" />
+                    <div class="form-group">
+                        <label asp-for="Company.CompanyName" class="control-label"></label>
+                        <input asp-for="Company.CompanyName" id="companyname" class="form-control" />
+                        <span asp-validation-for="Company.CompanyName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Company.Address" class="control-label"></label>
+                        <input asp-for="Company.Address" id="address" class="form-control" />
+                        <span asp-validation-for="Company.Address" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Company.Phone" class="control-label"></label>
+                        <input asp-for="Company.Phone" id="phone" class="form-control" />
+                        <span asp-validation-for="Company.Phone" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Company.Email" class="control-label"></label>
+                        <input asp-for="Company.Email" id="email" class="form-control" />
+                        <span asp-validation-for="Company.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" id="submitForm" value="Save" class="btn btn-outline-primary" />
+                        <a asp-page="./Index" class="btn btn-outline-secondary">Back to List</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<partial name="_ScriptPartial" />
+<script>
+    $(function () {
+        $('#submitform').click(function () {
+            var companyid = $('#companyid').val()
+            var companyname = $('#companyname').val();
+            var address = $('#address').val();
+            var phone = $('#phone').val();
+            var email = $('#email').val();
+            var data = {
+                companyid: companyid,
+                companyname: companyname,
+                address: address,
+                phone: phone,
+                email: email,
+            };
+            console.log(data);
+            $.ajax({
+                type: "PUT",
+                url: "/api/company/" + companyid,
+                contenttype: "application/json",
+                data: json.stringify(data),
+                success: function (data) {
+                    console.log("success:", data);
+                },
+                error: function (error) {
+                    console.error("error:", error);
+                }
+            });
+        });
+    });
+</script>
+
+
+
+
