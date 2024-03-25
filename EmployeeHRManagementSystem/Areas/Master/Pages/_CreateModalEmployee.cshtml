@@ -11,7 +11,14 @@
                     <input hidden id="txtType" />
                     <input hidden id="txtEmployeeID" value="0" />
                     <div class="row">
-                        <div class="col-sm-6 mb-3">
+                        <div class="col-12">
+                            <div id="ExtEmpName" class="alert alert-danger">
+                                <i class="bx bx-info"></i><span>Employee Name have been existing</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 mb-3">
                             <label class="form-label">EmployeeName<b class="text-danger">*</b></label>
                             <input type="text" id="txtEMName" class="form-control" name="txtName" placeholder="Enter Employee Name." required />
                             <div class="invalid-feedback">
@@ -20,14 +27,14 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-6 mb-3">
+                        <div class="col-sm-12 mb-3">
                             <label class="form-label">CompanyName<b class="text-danger">*</b></label>
                             <input type="text" id="txtCMName" class="form-control" name="txtName" placeholder="Enter Company Name." required />
                             <div class="invalid-feedback">
                                 Please type Company Name.
                             </div>
                         </div>
-                        <div class="col-sm-6 mb-3">
+                        <div class="col-sm-12 mb-3">
                             <label class="form-label">Deparment<b class="text-danger">*</b></label>
                             <input type="text" id="txtDPName" class="form-control" name="txtName" placeholder="Enter Deparment Name." required />
                             <div class="invalid-feedback">

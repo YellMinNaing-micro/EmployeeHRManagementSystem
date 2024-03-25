@@ -71,42 +71,69 @@ namespace EmployeeHRManagementSystem.Areas.Master.Controllers
                 Message = "Success"
             });
         }
+        [HttpGet("NameExists")]
+        public async Task<IActionResult>CheckNameExitst(string EmployeeName)
+        {
+            try
+            {
+                var exists=await _context.Employees.AnyAsync(e=> e.EmployeeName == EmployeeName);
+                return Ok(new ResModels()
+                {
+                    StatusCode = StatusCodes.Status200OK,
+                    Success = true,
+                    Data = exists,
+                    Message = "Employee Name is already existed"
+                });
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResModels()
+                { 
+                    StatusCode=StatusCodes.Status500InternalServerError,
+                    Success=false,
+                    Data="",
+                    Message=ex.Message
+                });
+            }
+            {
+
+            }
+        }
         [HttpGet("Employee/byid")]
         public async Task<IActionResult> GetEmployeebyid(int EmployeeId)
         {
             var employee = await _context.Employees.FirstOrDefaultAsync(s => s.EmployeeId == EmployeeId);
             return Ok(new ResModels()
             {
-                
+
                 StatusCode = StatusCodes.Status200OK,
                 Success = true,
                 Data = employee,
-                Message ="Success"
+                Message = "Success"
             });
         }
-        [HttpPut("Edit")]
+        [HttpPut("Employee/Edit")]
         public async Task<IActionResult> EditEmployee([FromForm] ASP.NetCore_Test.Entities.Employee emp)
         {
             try
             {
-                ASP.NetCore_Test.Entities.Employee employee = await _context.Employees.FirstOrDefaultAsync(s => s.EmployeeId == emp.EmployeeId);
-                if (employee!=null)
+                ASP.NetCore_Test.Entities.Employee? employee = await _context.Employees.FirstOrDefaultAsync(s => s.EmployeeId == emp.EmployeeId);
+                if (employee != null)
                 {
                     employee.EmployeeId = emp.EmployeeId;
                     employee.EmployeeName = emp.EmployeeName;
                     employee.CompanyName = emp.CompanyName;
                     employee.Deparment = emp.Deparment;
                     employee.UpdatedOn = DateTime.Now;
-                    employee.CreatedOn = emp.CreatedOn;
                 }
                 _context.Attach(employee).State = EntityState.Modified;
                 if (await _context.SaveChangesAsync() > 0)
                 {
-                    return Created("/api/Master/GetData", new ResModels()
+                    return Ok(new ResModels()
                     {
                         StatusCode = StatusCodes.Status200OK,
                         Success = true,
-                        Data = new {message="Successfully Edit"},
+                        Data = new { message = "Successfully Edit" },
                         Message = "Success"
                     });
                 }
@@ -114,9 +141,10 @@ namespace EmployeeHRManagementSystem.Areas.Master.Controllers
                 {
                     return BadRequest(new ResModels()
                     {
+                        StatusCode=StatusCodes.Status400BadRequest,
                         Data = null,
                         Success = false,
-                        Message="Message Req faill"
+                        Message = "Message Req faill"
                     });
                 }
             }
@@ -126,19 +154,18 @@ namespace EmployeeHRManagementSystem.Areas.Master.Controllers
                 {
                     Success = false,
                     StatusCode = StatusCodes.Status500InternalServerError,
-                    Data = null,                
+                    Data = null,
                     Message = exp.Message
                 });
-
             }
         }
-        [HttpPost("delete")]
+        [HttpDelete("Employee/delete")]
         public async Task<IActionResult> DeleteEmployee(int EmployeeID)
         {
 
             try
             {
-                ASP.NetCore_Test.Entities.Employee employee = await _context.Employees.FindAsync(EmployeeID);
+                ASP.NetCore_Test.Entities.Employee? employee = await _context.Employees.FindAsync(EmployeeID);
 
                 if (employee != null)
                 {
@@ -159,7 +186,7 @@ namespace EmployeeHRManagementSystem.Areas.Master.Controllers
                     return BadRequest(new ResModels()
                     {
                         StatusCode = StatusCodes.Status400BadRequest,
-                        Success = false,                  
+                        Success = false,
                         Data = null,
                         Message = "Delete Data unsuccessfully!"
                     });
@@ -170,7 +197,7 @@ namespace EmployeeHRManagementSystem.Areas.Master.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResModels()
                 {
                     StatusCode = StatusCodes.Status500InternalServerError,
-                    Success = false,                
+                    Success = false,
                     Data = null,
                     Message = ex.Message
                 });

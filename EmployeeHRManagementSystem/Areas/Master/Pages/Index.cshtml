@@ -11,7 +11,7 @@
     <div class="card-body">
         <div class="row mb-2">
             <div class="col-xl-6 col-lg-6 mb-lg-0 mb-2">
-                <button id="btnCreate" type="button" class="btn btn-outline-primary"><i class="fa fa-plus-circle"></i>&nbsp;Create</button>
+                <button id="btnCreate" type="button" class="btn btn-outline-primary">Create</button>
             </div>
         </div>
         <table id="table" class="table table-responsive nowrap w-100" cellspacing="0">
@@ -47,17 +47,18 @@
 <partial name="_ScriptPartial" />
 <!--Modal-->
 <partial name="_CreateModalEmployee" />
+<partial name="_DeleteModalEmployee" />
 <!--DataTables-->
 <script src="~/datatables/js/jquery.datatables.min.js"></script>
 <script src="~/datatables/js/datatables.bootstrap4.min.js"></script>
 <!--validation-->
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script>
-
+    var EmployeeID;
     $(function () {
         var table = $('#table').DataTable({
-            ajax: '/api/Master/GetData',  
-            scrollX: true, 
+            ajax: '/api/Master/GetData',
+            scrollX: true,
             columns: [
                 { data: 'employeeId' },
                 { data: 'employeeName' },
@@ -68,32 +69,29 @@
                 {
                     data: null,
                     render: function (row, type, data) {
-                        return '<a href="Employee?id=' + row.employeeId + '" onclick="getEditEvent(this)"><i class="fa fa-edit"></i class="btn btn-outline-info">Edit<a/> | ' +
-                            '<a href="Employee?id=' + row.employeeName + '" onclick="getDeleteEvent(this)"><i class="fa fa-trash"></i class="btn btn-outline-danger">Delete<a/> ';
+                        return '<button type="button" class="btn btn-outline-info" id="' + row.employeeId + '" onclick="getEditEvent(this)">Edit</button> | ' +
+                            '<button type="button"  class="btn btn-outline-danger" id="' + row.employeeId + '" onclick="getDeleteEvent(this)"><i class="fa fa-trash"></i>Delete</button> ';
                     }
-
                 }
             ]
         });
-
         $('#btnCreate').click(function () {
             $('#createOptionForm').removeClass('was-validated');
             $('#txtType').val('Create');
             $('#OptionModelLabel').text('Create New Employee');
             $('#CreateEmployee').modal('show');
+            $('#ExtEmpName').hide();
+            ResetItem();
         });
         $('#btnOpCancle').click(function () {
             $('#CreateEmployee').modal('hide');
-
         });
-
         $('#btnOpSubmit').click(function () {
             var employeeId = $('#txtEmployeeID').val();
             var employeeName = $('#txtEMName').val();
             var companyName = $('#txtCMName').val();
             var deparment = $('#txtDPName').val();
-
-
+            
             if ($('#txtType').val() == "Create") {
                 var data = {
                     EmployeeId: employeeId,
@@ -101,25 +99,22 @@
                     CompanyName: companyName,
                     Deparment: deparment,
                 };
-
                 if (employeeName !== '' && companyName !== '' && deparment !== '') {
-
                     $.ajax({
                         type: 'Post',
                         url: '/api/Master/Create',
                         dataType: 'Json',
                         data: data,
                         success: function (data) {
-                            $('#CreateEmployee').modal('hide');
+                            $('#CreateEmployee').modal('show');
+                            $('#ExtEmpName').show();
                             ResetItem();
                             table.ajax.reload();
                         },
                         complete: function (data) {
-
                         },
                         error: function (error) {
                             console.error("Error:", error);
-
                         }
                     });
                 }
@@ -127,11 +122,10 @@
                     $('#createOptionForm').addClass('was-validated');
                 }
             }
-            else
-            {
-                if (employeeName !== '' && companyName !== '' && deparment !== ''){
+            else {
+                if (employeeName !== '' && companyName !== '' && deparment !== '') {
                     var data = {
-                        EmployeeId: employeeId,
+                        EmployeeId: EmployeeID,
                         EmployeeName: employeeName,
                         CompanyName: companyName,
                         Deparment: deparment,
@@ -139,7 +133,7 @@
                     $('#CreateEmployee').modal('show');
                     $.ajax({
                         type: 'PUT',
-                        url: '/api/Master/Edit',
+                        url: '/api/Master/Employee/Edit',
                         dataType: 'json',
                         data: data,
                         success: function (data) {
@@ -151,7 +145,7 @@
 
                         },
                         complete: function (data) {
-                            table.ajax.reload();
+                            
                         }
                     });
                 }
@@ -166,19 +160,20 @@
         });
         $('#btnDelConfirm').click(function () {
             $('#DeleteEmployee').modal('hide');
-            var id = $('#deleteEmployee').val();
-            //console.log(id);
+            var id = $('#deleteEmployeeid').val();
+            console.log(id);
             $.ajax({
-                url: '/api/master/delete?EmployeeID=' + id,
-                type: 'Delete',
+                url: '/api/Master/Employee/delete?EmployeeID=' + id,
+                type: 'DELETE',
                 dataType: 'json',
                 success: function (data) {
+                    $('#DeleteEmployee').modal('hide');
                     table.ajax.reload();
                 },
                 error: function (data) {
                 },
                 complete: function (data) {
-                    table.ajax.reload();
+                   
                 }
             });
         });
@@ -191,11 +186,11 @@
 
     function getEditEvent(e) {
         console.log($(e).attr('id'));
-        employeeId = $(e).attr('id');
+        EmployeeID = $(e).attr('id');
         $('#txtType').val('Edit');
         $('#OptionModelLabel').text('Edit Employee');
         $('#CreateEmployee').modal('show');
-        var url = '/api/Master/byid?EmployeeID=' + $(e).attr('id');
+        var url = '/api/Master/Employee/byid?EmployeeId=' + EmployeeID;
 
         $.getJSON(url, function (data) {
             var employee = data['data'];
@@ -210,12 +205,12 @@
 
         $('#txtType').val('Delete');
         $('#DeleteModelLabel').text("Delete Confirmation");
-        var url = '/api/master/byid?Employee=' + $(e).attr('id');
+        var url = '/api/master/Employee/byid?EmployeeId=' + $(e).attr('id');
 
         $.getJSON(url, function (data) {
             var employee = data['data'];
             console.log(employee);
-            $('#deleteEmployee').val(employee.employeeId);
+            $('#deleteEmployeeid').val(employee.employeeId);
             $('#lblEmployeeID').text(employee.employeeId);
             $('#lblEmpName').text(employee.employeeName);
             $('#lblCMName').text(employee.companyName);
