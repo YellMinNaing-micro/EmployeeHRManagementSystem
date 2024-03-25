@@ -57,7 +57,7 @@
     $(function () {
         var table = $('#table').DataTable({
             ajax: '/api/Master/GetData',  
-            scrollX: true,
+            scrollX: true, 
             columns: [
                 { data: 'employeeId' },
                 { data: 'employeeName' },
@@ -136,7 +136,7 @@
                         CompanyName: companyName,
                         Deparment: deparment,
                     };
-                    $('#CreateEmployee').modal('hide');
+                    $('#CreateEmployee').modal('show');
                     $.ajax({
                         type: 'PUT',
                         url: '/api/Master/Edit',
