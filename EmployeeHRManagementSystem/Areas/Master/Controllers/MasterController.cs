@@ -71,28 +71,39 @@ namespace EmployeeHRManagementSystem.Areas.Master.Controllers
                 Message = "Success"
             });
         }
-        [HttpGet("NameExists")]
-        public async Task<IActionResult>CheckNameExitst(string EmployeeName)
+        [HttpGet("employee/NameExists")]
+        public async Task<IActionResult> CheckNameExitst(string EmployeeName)
         {
             try
             {
-                var exists=await _context.Employees.AnyAsync(e=> e.EmployeeName == EmployeeName);
-                return Ok(new ResModels()
-                {
-                    StatusCode = StatusCodes.Status200OK,
-                    Success = true,
-                    Data = exists,
-                    Message = "Employee Name is already existed"
-                });
+                ASP.NetCore_Test.Entities.Employee? employee = await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeName == EmployeeName);
+                return (employee != null)
+                   ? Ok(new ResModels()
+                   {
+                       StatusCode = StatusCodes.Status200OK,
+                       Success = true,
+                       Data = "",
+                       Message = "Employee Name is already existed",
+                       exists = true
+                   })
+                   : Ok(new ResModels()
+                   {
+                       StatusCode = StatusCodes.Status200OK,
+                       Success = true,
+                       Data = "",
+                       Message = "",
+                       exists = false
+                   });
+                    
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResModels()
-                { 
-                    StatusCode=StatusCodes.Status500InternalServerError,
-                    Success=false,
-                    Data="",
-                    Message=ex.Message
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Data = "",
+                    Message = ex.Message
                 });
             }
             {
@@ -141,7 +152,7 @@ namespace EmployeeHRManagementSystem.Areas.Master.Controllers
                 {
                     return BadRequest(new ResModels()
                     {
-                        StatusCode=StatusCodes.Status400BadRequest,
+                        StatusCode = StatusCodes.Status400BadRequest,
                         Data = null,
                         Success = false,
                         Message = "Message Req faill"

@@ -8,6 +8,7 @@ namespace EmployeeHRManagementSystem.Model
         public required bool Success {  get; set; } = false;
         public  dynamic? Data { get; set; }
         public  dynamic? Message {  get; set; }
+        public bool? exists { get; set; }
 
     }
 }

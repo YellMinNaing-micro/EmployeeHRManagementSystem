@@ -18,6 +18,9 @@
             <thead class="text-left bg-light">
                 <tr>
                     <th>
+                        
+                    </th>
+                    <th>
                         EmployeeID
                     </th>
                     <th>
@@ -51,6 +54,7 @@
 <!--DataTables-->
 <script src="~/datatables/js/jquery.datatables.min.js"></script>
 <script src="~/datatables/js/datatables.bootstrap4.min.js"></script>
+
 <!--validation-->
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script>
@@ -60,6 +64,15 @@
             ajax: '/api/Master/GetData',
             scrollX: true,
             columns: [
+                {
+                    defaultContent: '',
+                    width: "2.5%",
+                    render: function () {
+                        return '<input type="checkbox" class="form-check-input select-checkbox" style="margin-left:10px;">'
+                    },
+                    ordering: false,
+                    orderable: false,
+                },
                 { data: 'employeeId' },
                 { data: 'employeeName' },
                 { data: 'companyName' },
@@ -69,11 +82,18 @@
                 {
                     data: null,
                     render: function (row, type, data) {
-                        return '<button type="button" class="btn btn-outline-info" id="' + row.employeeId + '" onclick="getEditEvent(this)">Edit</button> | ' +
-                            '<button type="button"  class="btn btn-outline-danger" id="' + row.employeeId + '" onclick="getDeleteEvent(this)"><i class="fa fa-trash"></i>Delete</button> ';
+                        return '<button type="button" class="btn btn-outline-info" id="' + row.employeeId + '" onclick="getEditEvent(this)">Edit</button> | | ' +
+                            '<button type="button"  class="btn btn-outline-danger" id="' + row.employeeId + '" onclick="getDeleteEvent(this)">Delete</button> ';
                     }
                 }
             ]
+        });
+        table.on('select', function (e, dt, type, indexes) {
+            $('input[type="checkbox"]', table.rows().nodes()).prop('checked', false);
+            if (type === 'row') { $('input[type="checkbox"]', table.rows(indexes).nodes()).prop('checked', true); }
+        });
+        table.on('deselect', function (e, dt, type, indexes) {
+            $('input[type="checkbox"]', table.rows(indexes).nodes()).prop('checked', false);
         });
         $('#btnCreate').click(function () {
             $('#createOptionForm').removeClass('was-validated');
@@ -91,7 +111,7 @@
             var employeeName = $('#txtEMName').val();
             var companyName = $('#txtCMName').val();
             var deparment = $('#txtDPName').val();
-            
+
             if ($('#txtType').val() == "Create") {
                 var data = {
                     EmployeeId: employeeId,
@@ -101,58 +121,111 @@
                 };
                 if (employeeName !== '' && companyName !== '' && deparment !== '') {
                     $.ajax({
-                        type: 'Post',
-                        url: '/api/Master/Create',
+                        type: 'GET',
+                        url: '/api/Master/employee/NameExists',
                         dataType: 'Json',
-                        data: data,
-                        success: function (data) {
-                            $('#CreateEmployee').modal('show');
-                            $('#ExtEmpName').show();
-                            ResetItem();
-                            table.ajax.reload();
+                        data: { EmployeeName: employeeName },
+                        success: function (response) {
+                            if (response.exists) {
+                                $('#ExtEmpName').fadeIn();
+                                $('#txtEMName').focus();
+                            }
+                            else {
+                                $.ajax({
+                                    type: 'Post',
+                                    url: '/api/Master/Create',
+                                    dataType: 'Json',
+                                    data: data,
+                                    success: function (data) {
+                                        $('#CreateEmployee').modal('hide');
+                                        ResetItem();
+                                        table.ajax.reload();
+                                    },
+                                    complete: function (data) {
+
+                                    },
+                                    error: function (error) {
+                                        console.error("Error:", error);
+                                    }
+                                });
+                            }
                         },
-                        complete: function (data) {
-                        },
-                        error: function (error) {
-                            console.error("Error:", error);
-                        }
+
                     });
                 }
                 else {
                     $('#createOptionForm').addClass('was-validated');
+                    
                 }
+
             }
             else {
+                var data = {
+                    EmployeeId: EmployeeID,
+                    EmployeeName: employeeName,
+                    CompanyName: companyName,
+                    Deparment: deparment,
+                };
                 if (employeeName !== '' && companyName !== '' && deparment !== '') {
-                    var data = {
-                        EmployeeId: EmployeeID,
-                        EmployeeName: employeeName,
-                        CompanyName: companyName,
-                        Deparment: deparment,
-                    };
-                    $('#CreateEmployee').modal('show');
                     $.ajax({
-                        type: 'PUT',
-                        url: '/api/Master/Employee/Edit',
-                        dataType: 'json',
-                        data: data,
-                        success: function (data) {
-                            $('#CreateEmployee').modal('hide');
-                            ResetItem();
-                            table.ajax.reload();
-                        },
-                        error: function () {
+                        type:'GET',
+                        url: '/api/Master/employee/NameExists',
+                        dataType: 'Json',
+                        data: { EmployeeName: employeeName },
+                        success: function (response) {
+                            if (response.exists) {
+                                $('#ExtEmpName').fadeToggle();
+                                $('#txtEMName').focus();
+                            }
+                            else {
+                                $.ajax({
+                                    type: 'PUT',
+                                    url: '/api/Master/Employee/Edit',
+                                    dataType: 'json',
+                                    data: data,
+                                    success: function (data) {
+                                        $('#CreateEmployee').modal('hide');
+                                        ResetItem();
+                                        table.ajax.reload();
+                                    },
+                                    error: function () {
 
-                        },
-                        complete: function (data) {
-                            
-                        }
+                                    },
+                                    complete: function (data) {
+
+                                    }
+                                });
+                            }
+                            },
                     });
                 }
                 else {
                     $('#createOptionForm').addClass('was-validated');
                 }
             }
+        });
+        $('#txtEMName').change(function () {
+            var EmployeeName = $(this).val();
+            var alMes = $('#ExtEmpName')
+            alMes.hide();
+            $.ajax({
+                type: 'GET',
+                url: '/api/Master/employee/NameExists',
+                dataType: 'Json',
+                data: { EmployeeName: employeeName },
+                success: function (response) {
+                    if (response.exists) {
+                        $('#ExtEmpName').show();
+                        $('#txtEMName').focus();
+                    }
+                    else {
+                        alMes.hide();
+                    }
+                },
+                error: function () {
+
+                }
+            });
         });
         $('#btnOpCancle').click(function () {
             $('#CreateEmployee').modal('hide');
@@ -173,7 +246,7 @@
                 error: function (data) {
                 },
                 complete: function (data) {
-                   
+
                 }
             });
         });
@@ -183,13 +256,14 @@
         });
 
     });
-
+    
     function getEditEvent(e) {
         console.log($(e).attr('id'));
         EmployeeID = $(e).attr('id');
         $('#txtType').val('Edit');
         $('#OptionModelLabel').text('Edit Employee');
         $('#CreateEmployee').modal('show');
+        $('#ExtEmpName').hide();
         var url = '/api/Master/Employee/byid?EmployeeId=' + EmployeeID;
 
         $.getJSON(url, function (data) {
