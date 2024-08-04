@@ -2,6 +2,7 @@ using ASP.NetCore_Test.Data;
 using EmployeeHRManagementSystem.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+
 namespace EmployeeHRManagementSystem
 {
     public class Program
